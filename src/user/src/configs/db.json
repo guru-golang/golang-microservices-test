@@ -1,0 +1,15 @@
+{
+  "gorm": {
+    "dsn": "host=127.0.0.11 user=postgres password=rB4dRlyn38F75Sg13Xd5iNM1wfSYZY708gh dbname=postgres port=5432 sslmode=disable TimeZone=UTC",
+    "connOptions": {
+      "maxLifetime": -1,
+      "maxIdleTime": 0,
+      "maxOpenConns": 15,
+      "maxIdleConns": 0
+    },
+    "options": {
+      "skipDefaultTransaction": false,
+      "disableAutomaticPing": false
+    }
+  }
+}
