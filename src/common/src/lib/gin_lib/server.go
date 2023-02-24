@@ -19,9 +19,8 @@ type (
 	}
 
 	Router struct {
-		Base    string                      `json:"base"`
-		Group   *gin.RouterGroup            `json:"group"`
-		Actions map[string]*gin.HandlerFunc `json:"actions"`
+		Base  string           `json:"base"`
+		Group *gin.RouterGroup `json:"group"`
 	}
 
 	Gin struct {

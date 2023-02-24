@@ -1,9 +1,13 @@
-package model
+package common
 
 import (
 	"car-rent-platform/backend/common/src/lib/gorm_lib"
+	"car-rent-platform/backend/common/src/lib/strings_lib"
+	"car-rent-platform/backend/common/src/lib/wql_lib"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -35,6 +39,76 @@ func (r *Repo[Input, Output]) Init(input Input, output Output, table string, db 
 
 	r.validate.RegisterStructValidation(r.inputStruct, r.Input())
 	r.validate.RegisterStructValidation(r.outputStruct, r.Output())
+}
+
+func (r *Repo[Input, Output]) Scan(filter *wql_lib.FilterInput) *gorm.DB {
+	db := r.db.Base.Table(r.Table()).Model(r.Input())
+
+	db = r.BuildFilterMeta(filter, db)
+	db = r.BuildQueryMeta(filter, db)
+	db = r.BuildOrderMeta(filter, db)
+	db = r.BuildAttributeMeta(filter, db)
+	db = r.BuildIncludeMeta(filter, db)
+
+	return db
+}
+
+func (r *Repo[Input, Output]) BuildFilterMeta(filter *wql_lib.FilterInput, scan *gorm.DB) *gorm.DB {
+	if filter.FilterMeta != nil {
+		return scan.Where(filter.FilterMeta)
+	}
+	return scan
+}
+
+func (r *Repo[Input, Output]) BuildQueryMeta(filter *wql_lib.FilterInput, scan *gorm.DB) *gorm.DB {
+	if filter.QueryMeta != nil {
+		page, _ := strconv.Atoi(filter.QueryMeta["page"])
+		count, _ := strconv.Atoi(filter.QueryMeta["count"])
+		offset := (page - 1) * count
+
+		scan = scan.Offset(offset).Limit(count)
+	}
+	return scan
+}
+
+func (r *Repo[Input, Output]) BuildOrderMeta(filter *wql_lib.FilterInput, scan *gorm.DB) *gorm.DB {
+	if filter.OrderMeta != nil {
+		order := []string{"asc", "desc"}
+		for key, orderMeta := range filter.OrderMeta {
+			if strings_lib.Contains(order, orderMeta) {
+				scan = scan.Order(fmt.Sprintf("%v %v", key, orderMeta))
+			}
+		}
+	}
+	return scan
+}
+
+func (r *Repo[Input, Output]) BuildIncludeMeta(filter *wql_lib.FilterInput, scan *gorm.DB) *gorm.DB {
+	if filter.IncludeMeta != nil {
+		for key, includeMeta := range filter.IncludeMeta {
+			if includeMeta == "join" {
+				scan = scan.Joins(key)
+			}
+			if includeMeta == "innerJoin" {
+				scan = scan.InnerJoins(key)
+			}
+		}
+	}
+	return scan
+}
+
+func (r *Repo[Input, Output]) BuildAttributeMeta(filter *wql_lib.FilterInput, scan *gorm.DB) *gorm.DB {
+	if filter.AttributeMeta != nil {
+		for key, attributeMeta := range filter.AttributeMeta {
+			if attributeMeta == "pick" {
+				scan = scan.Select(key)
+			}
+			if attributeMeta == "omit" {
+				scan = scan.Omit(key)
+			}
+		}
+	}
+	return scan
 }
 
 func (r *Repo[Input, Output]) SetTable(name string) {

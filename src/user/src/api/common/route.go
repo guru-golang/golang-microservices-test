@@ -8,7 +8,7 @@ import (
 
 type (
 	CommonInterface interface {
-		Init(g *gin_lib.Gin, r *repository.Repository)
+		Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.RouterGroup) *gin.RouterGroup
 	}
 	FullInterface interface {
 		CommonInterface

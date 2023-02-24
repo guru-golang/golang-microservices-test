@@ -1,10 +1,10 @@
-package user
+package profile
 
 import (
 	"car-rent-platform/backend/common/src/lib/gin_lib"
 	"car-rent-platform/backend/common/src/lib/wql_lib"
 	"car-rent-platform/backend/common/src/repository"
-	"car-rent-platform/backend/common/src/repository/user"
+	"car-rent-platform/backend/common/src/repository/user-profile"
 	"car-rent-platform/backend/user/src/api/common"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,7 +16,7 @@ type (
 	}
 
 	Route struct {
-		Service UserInterface
+		Service UserProfileInterface
 	}
 )
 
@@ -30,9 +30,9 @@ func (r *Route) Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.Router
 
 	var route *gin.RouterGroup
 	if gr == nil {
-		route = g.Route("user").Group
+		route = g.Route("profile").Group
 	} else {
-		route = gr.Group("user")
+		route = gr.Group("profile")
 	}
 	route.GET("", r.FindAll)
 	route.POST("", r.Create)
@@ -55,7 +55,7 @@ func (r *Route) FindAll(ctx *gin.Context) {
 }
 
 func (r *Route) FindOne(ctx *gin.Context) {
-	var input user.Input
+	var input user_profile.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
@@ -68,7 +68,7 @@ func (r *Route) FindOne(ctx *gin.Context) {
 }
 
 func (r *Route) Create(ctx *gin.Context) {
-	var input user.Input
+	var input user_profile.Input
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else if out, err := r.Service.Create(&input); err != nil {
@@ -79,7 +79,7 @@ func (r *Route) Create(ctx *gin.Context) {
 }
 
 func (r *Route) Update(ctx *gin.Context) {
-	var input user.Input
+	var input user_profile.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
@@ -92,7 +92,7 @@ func (r *Route) Update(ctx *gin.Context) {
 }
 
 func (r *Route) Remove(ctx *gin.Context) {
-	var input user.Input
+	var input user_profile.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {

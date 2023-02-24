@@ -6,6 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"time"
 
 	"car-rent-platform/backend/common/src/lib/config_lib"
@@ -79,6 +80,8 @@ func (c *Conf) Load() {
 		log.Fatal().Msg(err.Error())
 	}
 	c.Options = optionsSwap
+	c.Options.Logger = logger.Default
+
 	var connOptionsSwap ConnOptions
 	if err := mapstructure.Decode(connOptions, &connOptionsSwap); err != nil {
 		log.Fatal().Msg(err.Error())
