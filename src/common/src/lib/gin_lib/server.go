@@ -2,6 +2,8 @@ package gin_lib
 
 import (
 	"car-rent-platform/backend/common/src/lib/config_lib"
+	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +17,8 @@ type (
 	}
 
 	Conf struct {
-		Host string `json:"host"`
+		Host    string `json:"host"`
+		Version string `json:"version"`
 	}
 
 	Router struct {
@@ -36,9 +39,16 @@ func NewServer() Interface {
 }
 
 func (s *Server) Init() *Gin {
+	flag.Parse()
 	s.Gin.Conf.Load()
-	s.Gin.Base = gin.New()
 
+	if config_lib.Config.Get("app_log").(string) == "debug" {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	s.Gin.Base = gin.New()
 	s.Gin.Base.Use(gin.Logger())
 	s.Gin.Base.Use(gin.Recovery())
 
@@ -60,6 +70,8 @@ func (g *Gin) Run() error {
 }
 
 func (c *Conf) Load() {
-	conf := config_lib.Config.Get("server_gin").(map[string]any)
-	c.Host = conf["host"].(string)
+	appName := config_lib.Config.Get(fmt.Sprintf("app_name")).(string)
+	fmt.Println("appName", appName)
+	conf := config_lib.Config.Get(fmt.Sprintf("services_%v_gin", appName)).(map[string]any)
+	c.Host, c.Version = conf["host"].(string), conf["version"].(string)
 }

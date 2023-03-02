@@ -2,6 +2,8 @@ package config_lib
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -51,10 +53,15 @@ var config map[string]any
 func Init() {
 	path, _ := os.Getwd()
 
+	path = strings.ReplaceAll(path, "\\", "/")
+	pathSlice := strings.Split(path, "/")
+	pathSlice = pathSlice[:len(pathSlice)-2]
+	path = strings.Join(pathSlice, "/")
+
 	Config = NewConf()
 	config = make(map[string]any)
 
-	readDir(path + "/src/configs/")
+	readDir(fmt.Sprintf("%v/%v", path, "conf/"))
 
 	Config.SetData(config)
 
@@ -64,9 +71,9 @@ func Init() {
 }
 
 func readDir(path string) {
-	files, err := ioutil.ReadDir(path)
+	files, err := os.ReadDir(path)
 	if err != nil {
-		panic(err)
+		log.Panic().Msg(err.Error())
 	}
 
 	for _, f := range files {
@@ -75,11 +82,11 @@ func readDir(path string) {
 		} else {
 			file, err := ioutil.ReadFile(path + f.Name())
 			if err != nil {
-				panic(err)
+				log.Panic().Msg(err.Error())
 			}
 			var data = make(map[string]any)
 			if err := json.Unmarshal(file, &data); err != nil {
-				panic(err)
+				log.Panic().Msg(err.Error())
 			}
 			setConfigs(&data, strings.TrimSuffix(f.Name(), filepath.Ext(f.Name())))
 		}
@@ -101,7 +108,7 @@ func setConfigs(data *map[string]any, key string) {
 		case map[string]any:
 			var rr = v.(map[string]any)
 			if swap != "" {
-				rr = json_lib.Decode(make(map[string]any), swap).(map[string]any)
+				rr = json_lib.Decode[map[string]any](make(map[string]any), swap)
 				config[skey] = rr
 			}
 			setConfigs(&rr, skey)

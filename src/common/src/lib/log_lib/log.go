@@ -47,7 +47,8 @@ func setLogLevel() {
 	beforeFormat := func(i interface{}) string { return fmt.Sprintf("[%s: ", i) }
 	afterFormat := func(i interface{}) string { return fmt.Sprintf("%s]", i) }
 	callerFormat := func(i interface{}) string {
-		return strings.Replace(fmt.Sprintf("[%s]", i), strings.Replace(wd, "\\", "/", -1), "", 1)
+		wdslice := strings.Split(strings.Replace(wd, "\\", "/", -1), "/")
+		return strings.Replace(fmt.Sprintf("[%s]", i), strings.Join(wdslice[:len(wdslice)-1], "/"), "", 1)
 	}
 
 	output := zerolog.NewConsoleWriter()

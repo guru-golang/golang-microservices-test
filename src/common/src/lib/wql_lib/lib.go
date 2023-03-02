@@ -6,14 +6,14 @@ import (
 )
 
 type FilterInput struct {
-	FilterMeta    map[string]string `json:"filterMeta" form:"filterMeta"`
+	FilterMeta    map[string]string `json:"filterMeta" form:"filterMeta" validate:"required"`
 	QueryMeta     map[string]string `json:"queryMeta" form:"queryMeta"`
 	OrderMeta     map[string]string `json:"orderMeta" form:"orderMeta"`
 	AttributeMeta map[string]string `json:"attributeMeta" form:"attributeMeta"`
 	IncludeMeta   map[string]string `json:"includeMeta" form:"includeMeta"`
 }
 
-func (f *FilterInput) Scan(ctx *gin.Context) (error, *FilterInput) {
+func (f *FilterInput) GinScan(ctx *gin.Context) (error, *FilterInput) {
 	if filterMeta, ok := ctx.GetQueryMap("filterMeta"); ok {
 		f.FilterMeta = filterMeta
 	} else {

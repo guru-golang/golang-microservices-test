@@ -11,93 +11,93 @@ import (
 )
 
 type (
-	Interface interface {
-		common.FullInterface
+	RouteInterface interface {
+		common.FullRouteInterface
 	}
 
 	Route struct {
-		Service UserInterface
+		service UserInterface
 	}
 )
 
-func NewRoute() Interface {
+func NewRoute() RouteInterface {
 	var i = Route{}
 	return &i
 }
 
-func (r *Route) Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.RouterGroup) *gin.RouterGroup {
-	r.Service = NewUserService(repo)
+func (route *Route) Init(g *gin_lib.Gin, r *repository.Repository, gr *gin.RouterGroup) *gin.RouterGroup {
+	route.service = NewUserService(r)
 
-	var route *gin.RouterGroup
+	var rg *gin.RouterGroup
 	if gr == nil {
-		route = g.Route("user").Group
+		rg = g.Route("user").Group
 	} else {
-		route = gr.Group("user")
+		rg = gr.Group("user")
 	}
-	route.GET("", r.FindAll)
-	route.POST("", r.Create)
-	route.GET(":uuid", r.FindOne)
-	route.PATCH(":uuid", r.Update)
-	route.DELETE(":uuid", r.Remove)
+	rg.GET("", route.FindAll)
+	rg.POST("", route.Create)
+	rg.GET(":uuid", route.FindOne)
+	rg.PATCH(":uuid", route.Update)
+	rg.DELETE(":uuid", route.Remove)
 
-	return route
+	return rg
 }
 
-func (r *Route) FindAll(ctx *gin.Context) {
+func (route *Route) FindAll(ctx *gin.Context) {
 	var input wql_lib.FilterInput
-	if err, filterInput := input.Scan(ctx); err != nil {
+	if err, filterInput := input.GinScan(ctx); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
-	} else if out, err := r.Service.FindAll(filterInput); err != nil {
+	} else if out, err := route.service.FindAll(filterInput); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"status": true, "result": out, "meta": filterInput.QueryMeta})
 	}
 }
 
-func (r *Route) FindOne(ctx *gin.Context) {
+func (route *Route) FindOne(ctx *gin.Context) {
 	var input user.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
-	} else if out, err := r.Service.FindOne(&input); err != nil {
+	} else if out, err := route.service.FindOne(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"status": true, "result": out})
 	}
 }
 
-func (r *Route) Create(ctx *gin.Context) {
+func (route *Route) Create(ctx *gin.Context) {
 	var input user.Input
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
-	} else if out, err := r.Service.Create(&input); err != nil {
+	} else if out, err := route.service.Create(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"status": true, "result": out})
 	}
 }
 
-func (r *Route) Update(ctx *gin.Context) {
+func (route *Route) Update(ctx *gin.Context) {
 	var input user.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
-	} else if out, err := r.Service.Update(&input); err != nil {
+	} else if out, err := route.service.Update(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"status": true, "result": out})
 	}
 }
 
-func (r *Route) Remove(ctx *gin.Context) {
+func (route *Route) Remove(ctx *gin.Context) {
 	var input user.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
-	} else if out, err := r.Service.Remove(&input); err != nil {
+	} else if out, err := route.service.Remove(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{"status": true, "result": out})

@@ -11,8 +11,8 @@ import (
 )
 
 type (
-	Interface interface {
-		common.FullInterface
+	RouteInterface interface {
+		common.FullRouteInterface
 	}
 
 	Route struct {
@@ -20,7 +20,7 @@ type (
 	}
 )
 
-func NewRoute() Interface {
+func NewRoute() RouteInterface {
 	var i = Route{}
 	return &i
 }
@@ -45,7 +45,7 @@ func (r *Route) Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.Router
 
 func (r *Route) FindAll(ctx *gin.Context) {
 	var input wql_lib.FilterInput
-	if err, filterInput := input.Scan(ctx); err != nil {
+	if err, filterInput := input.GinScan(ctx); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else if out, err := r.Service.FindAll(filterInput); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})

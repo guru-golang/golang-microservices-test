@@ -4,7 +4,7 @@
     "connOptions": {
       "maxLifetime": -1,
       "maxIdleTime": 0,
-      "maxOpenConns": 15,
+      "maxOpenConns": 150,
       "maxIdleConns": 0
     },
     "options": {

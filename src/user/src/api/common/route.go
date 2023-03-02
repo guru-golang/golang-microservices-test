@@ -7,11 +7,12 @@ import (
 )
 
 type (
-	CommonInterface interface {
-		Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.RouterGroup) *gin.RouterGroup
+	RouteInterface interface {
+		Init(g *gin_lib.Gin, r *repository.Repository, gr *gin.RouterGroup) *gin.RouterGroup
 	}
-	FullInterface interface {
-		CommonInterface
+
+	FullRouteInterface interface {
+		RouteInterface
 		FindAll(ctx *gin.Context)
 		FindOne(ctx *gin.Context)
 		Create(ctx *gin.Context)

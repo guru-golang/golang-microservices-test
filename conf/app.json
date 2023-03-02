@@ -1,4 +1,5 @@
 {
+  "name": "service",
   "log": "debug",
   "proxy": {
     "port": ":8081"

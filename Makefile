@@ -21,7 +21,7 @@ init:
 
 mod-init:
 	cd ./src/${p} && \
-	go mod init ${p}
+	go mod init ${m}
 
 install:
 	cd ./src/${p}/src && \
@@ -45,7 +45,7 @@ tidy:
 
 build:
 	cd ./src/${p} && \
-	go build -ldflags="-w -s" -o ./pkg/app ./src && \
+	go build -ldflags="-w -s" -buildvcs=false -o ./pkg/app ./src && \
 	chmod +x ./pkg/app
 
 run:
