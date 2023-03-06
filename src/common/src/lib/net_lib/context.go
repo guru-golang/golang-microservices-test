@@ -17,24 +17,24 @@ const (
 
 type Context struct {
 	Conn net.Conn
-	Msg  Message
+	Msg  *Message
 }
 
-func (c *Context) SendEmit(data gin.H) (err error) {
+func (c *Context) Emit(data gin.H) (err error) {
 	swap := data
 	swap["status"] = true
 	_, err = fmt.Fprintln(c.Conn, c.Msg.ToStr(swap))
 	return
 }
 
-func (c *Context) SendResp(data gin.H) (err error) {
+func (c *Context) Response(data gin.H) (err error) {
 	swap := data
 	swap["status"] = true
 	_, err = c.Conn.Write(c.Msg.ToByte(swap))
 	return
 }
 
-func (c *Context) SendErr(err error) (errr error) {
+func (c *Context) Error(err error) (errr error) {
 	swap := gin.H{"status": false, "reason": err.Error()}
 	_, errr = c.Conn.Write(c.Msg.ToByte(swap))
 	return

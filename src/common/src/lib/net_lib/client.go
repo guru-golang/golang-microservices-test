@@ -17,10 +17,6 @@ type (
 	}
 	Rpc struct {
 	}
-	rpcMessage struct {
-		Cmd  string `json:"cmd"`
-		Body gin.H  `json:"body"`
-	}
 	RpcResult struct {
 		Err  *string `json:"err,omitempty"`
 		Body gin.H   `json:"body"`
@@ -64,12 +60,12 @@ func (rc *RpcClient) Send(cmd string, data gin.H) (res gin.H, err error) {
 	}
 	defer rc.release(conn)
 
-	ctx := Context{Conn: conn, Msg: Message{}}
+	ctx := Context{Conn: conn, Msg: &Message{}}
 	if err != nil {
 		return nil, err
 	}
 
-	if err = ctx.SendResp(gin.H{"cmd": cmd, "body": data}); err != nil {
+	if err = ctx.Response(gin.H{"cmd": cmd, "body": data}); err != nil {
 		return nil, err
 	}
 
@@ -89,12 +85,12 @@ func (rc *RpcClient) Emit(cmd string, data gin.H) (res gin.H, err error) {
 		return nil, err
 	}
 
-	ctx := Context{Conn: rc.current, Msg: Message{}}
+	ctx := Context{Conn: rc.current, Msg: &Message{}}
 	if err != nil {
 		return nil, err
 	}
 
-	if err = ctx.SendEmit(gin.H{"cmd": cmd, "body": data}); err != nil {
+	if err = ctx.Emit(gin.H{"cmd": cmd, "body": data}); err != nil {
 		return nil, err
 	}
 
@@ -135,7 +131,7 @@ func (rc *RpcClient) response(data gin.H) (res gin.H, err error) {
 	if data["status"].(bool) == true {
 		return data, nil
 	} else {
-		fmt.Println(res)
-		return nil, errors.New(res["reason"].(string))
+		fmt.Println(data)
+		return nil, errors.New(data["reason"].(string))
 	}
 }

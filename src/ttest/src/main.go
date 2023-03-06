@@ -17,8 +17,8 @@ func init() {
 
 func main() {
 	service := net_lib.New().Service("user")
-	for i := 0; i < 2000000; i++ {
-		send, err := service.Emit(net_lib.UserFindAll, gin.H{"phone": "1"})
+	for i := 0; i < 1; i++ {
+		send, err := service.Emit(net_lib.UserFindAll, gin.H{"filterMeta": gin.H{"email": "asdasd@asd.asd"}})
 		if err != nil {
 			fmt.Println(i, err)
 			return
@@ -29,8 +29,8 @@ func main() {
 		fmt.Println(err)
 	}
 
-	for i := 0; i < 200000; i++ {
-		send, err := service.Emit(net_lib.UserFindAll, gin.H{"phone": "1"})
+	for i := 0; i < 1; i++ {
+		send, err := service.Emit(net_lib.UserFindOne, gin.H{"uuid": "0513a061-8b1b-48ec-aa42-172ea9abfde4"})
 		if err != nil {
 			fmt.Println(i, err)
 			return

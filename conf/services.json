@@ -2,18 +2,64 @@
   "user": {
     "gin": {
       "host": "127.0.7.1:7001",
-      "version": "api/v1"
+      "version": "api/user/v1"
     },
     "tcp": {
       "host": "127.0.7.1:17001",
       "pool": 5
     }
   },
-  "ttest": {
+  "info": {
     "gin": {
-      "host": "127.0.7.1:7001",
-      "version": "api/v1"
+      "host": "127.0.7.1:7002",
+      "version": "api/info/v1"
     },
+    "tcp": {
+      "host": "127.0.7.1:17002",
+      "pool": 5
+    }
+  },
+  "payment": {
+    "gin": {
+      "host": "127.0.7.1:7003",
+      "version": "api/payment/v1"
+    },
+    "tcp": {
+      "host": "127.0.7.1:17003",
+      "pool": 5
+    }
+  },
+  "support": {
+    "gin": {
+      "host": "127.0.7.1:7004",
+      "version": "api/support/v1"
+    },
+    "tcp": {
+      "host": "127.0.7.1:17004",
+      "pool": 5
+    }
+  },
+  "wallet": {
+    "gin": {
+      "host": "127.0.7.1:7005",
+      "version": "api/wallet/v1"
+    },
+    "tcp": {
+      "host": "127.0.7.1:17005",
+      "pool": 5
+    }
+  },
+  "worker": {
+    "gin": {
+      "host": "127.0.7.1:7006",
+      "version": "api/worker/v1"
+    },
+    "tcp": {
+      "host": "127.0.7.1:17006",
+      "pool": 5
+    }
+  },
+  "ttest": {
     "tcp": {
       "host": "127.0.7.1:17001",
       "pool": 5

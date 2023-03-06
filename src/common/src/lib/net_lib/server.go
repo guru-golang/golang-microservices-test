@@ -3,6 +3,7 @@ package net_lib
 import (
 	"car-rent-platform/backend/common/src/lib/config_lib"
 	"car-rent-platform/backend/common/src/lib/json_lib"
+	"car-rent-platform/backend/common/src/lib/reflect_lib"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ import (
 )
 
 type (
-	HandlerFunc func(ctx Context)
+	HandlerFunc func(ctx *Context)
 
 	ServerInterface interface {
 		Init() *Net
@@ -41,8 +42,10 @@ type (
 		data map[string]HandlerFunc
 	}
 	Message struct {
+		m    sync.Mutex
 		cmd  string
 		body string
+		data any
 	}
 )
 
@@ -131,7 +134,7 @@ func (n *Net) handlePattern(data gin.H, conn net.Conn) {
 		log.Error().Msgf(`RPC-error Non-existent RPC message pattern:"%v"`, cmd)
 	} else {
 		log.Debug().Msgf(`RPC-debug RPC message pattern cmd:"%v"`, cmd)
-		hf(Context{Conn: conn, Msg: Message{cmd, body}})
+		hf(&Context{Conn: conn, Msg: &Message{cmd: cmd, body: body}})
 	}
 
 }
@@ -141,9 +144,30 @@ func (m *Message) ShouldBind(obj any) error {
 }
 
 func (m *Message) Data() any {
-	var obj any
-	json_lib.Decode[any](&obj, m.body)
-	return obj
+	if m.data == nil {
+		json_lib.Decode[any](&m.data, m.body)
+	}
+	return m.data
+}
+
+func (m *Message) Prop(name string) (reflect.Value, error) {
+	return reflect_lib.Prop(m.Data(), name)
+}
+
+func (m *Message) PropString(name string) (*string, error) {
+	return reflect_lib.PropString(m.Data(), name)
+}
+
+func (m *Message) PropInt(name string) (*int, error) {
+	return reflect_lib.PropInt(m.Data(), name)
+}
+
+func (m *Message) PropUint(name string) (*uint, error) {
+	return reflect_lib.PropUint(m.Data(), name)
+}
+
+func (m *Message) PropBoll(name string) (*bool, error) {
+	return reflect_lib.PropBoll(m.Data(), name)
 }
 
 func (m *Message) ToByte(obj gin.H) []byte {
