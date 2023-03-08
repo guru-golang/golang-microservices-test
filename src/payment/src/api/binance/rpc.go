@@ -1,4 +1,4 @@
-package configuration
+package binance
 
 import (
 	common "car-rent-platform/backend/common/src/context"
@@ -15,12 +15,12 @@ type (
 	}
 
 	Rpc struct {
-		service ConfigurationInterface
+		service BinanceInterface
 	}
 )
 
 func (rpc *Rpc) Init(n *net_lib.Net, r *repository.Repository) {
-	rpc.service = NewConfigurationService(r)
+	rpc.service = NewBinanceService(r)
 	n.Pattern(net_lib.ConfFindAll, rpc.FindAll)
 	n.Pattern(net_lib.ConfFindOne, rpc.FindOne)
 	n.Pattern(net_lib.ConfCreate, rpc.Create)

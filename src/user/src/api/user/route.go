@@ -1,6 +1,7 @@
 package user
 
 import (
+	"car-rent-platform/backend/common/src/lib/builtin_lib"
 	"car-rent-platform/backend/common/src/lib/gin_lib"
 	"car-rent-platform/backend/common/src/lib/wql_lib"
 	"car-rent-platform/backend/common/src/repository"
@@ -30,9 +31,9 @@ func (route *Route) Init(g *gin_lib.Gin, r *repository.Repository, gr *gin.Route
 
 	var rg *gin.RouterGroup
 	if gr == nil {
-		rg = g.Route("user").Group
+		rg = g.Route(builtin_lib.GetLocalPkgName()).Group
 	} else {
-		rg = gr.Group("user")
+		rg = gr.Group(builtin_lib.GetLocalPkgName())
 	}
 	rg.GET("", route.FindAll)
 	rg.POST("", route.Create)

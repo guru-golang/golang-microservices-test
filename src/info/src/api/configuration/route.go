@@ -2,6 +2,7 @@ package configuration
 
 import (
 	common "car-rent-platform/backend/common/src/context"
+	"car-rent-platform/backend/common/src/lib/builtin_lib"
 	"car-rent-platform/backend/common/src/lib/gin_lib"
 	"car-rent-platform/backend/common/src/lib/wql_lib"
 	"car-rent-platform/backend/common/src/repository"
@@ -30,9 +31,9 @@ func (r *Route) Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.Router
 
 	var route *gin.RouterGroup
 	if gr == nil {
-		route = g.Route("profile").Group
+		route = g.Route(builtin_lib.GetLocalPkgName()).Group
 	} else {
-		route = gr.Group("profile")
+		route = gr.Group(builtin_lib.GetLocalPkgName())
 	}
 	route.GET("", r.FindAll)
 	route.POST("", r.Create)

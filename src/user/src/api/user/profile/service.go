@@ -21,7 +21,7 @@ type (
 	}
 )
 
-func NewUserService(repo *repository.Repository) UserProfileInterface {
+func NewUserProfileService(repo *repository.Repository) UserProfileInterface {
 	var i = UserProfileService{repo: repo}
 	i.userModel = i.repo.Model("userProfile").(*common.Repo[user_profile.Input, user_profile.Output])
 	return &i

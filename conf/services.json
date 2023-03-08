@@ -64,5 +64,16 @@
       "host": "127.0.7.1:17001",
       "pool": 5
     }
+  },
+  "backends": [
+    "user",
+    "info",
+    "payment",
+    "support",
+    "wallet",
+    "worker"
+  ],
+  "proxy": {
+    "port": ":7000"
   }
 }

@@ -1,10 +1,11 @@
-package profile
+package notification
 
 import (
+	"car-rent-platform/backend/common/src/lib/builtin_lib"
 	"car-rent-platform/backend/common/src/lib/gin_lib"
 	"car-rent-platform/backend/common/src/lib/wql_lib"
 	"car-rent-platform/backend/common/src/repository"
-	"car-rent-platform/backend/common/src/repository/user-profile"
+	user_notification "car-rent-platform/backend/common/src/repository/user-notification"
 	"car-rent-platform/backend/user/src/api/common"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,7 +17,7 @@ type (
 	}
 
 	Route struct {
-		service UserProfileInterface
+		service UserNotificationInterface
 	}
 )
 
@@ -26,13 +27,13 @@ func NewRoute() RouteInterface {
 }
 
 func (r *Route) Init(g *gin_lib.Gin, repo *repository.Repository, gr *gin.RouterGroup) *gin.RouterGroup {
-	r.service = NewUserProfileService(repo)
+	r.service = NewUserNotificationService(repo)
 
 	var route *gin.RouterGroup
 	if gr == nil {
-		route = g.Route("profile").Group
+		route = g.Route(builtin_lib.GetLocalPkgName()).Group
 	} else {
-		route = gr.Group("profile")
+		route = gr.Group(builtin_lib.GetLocalPkgName())
 	}
 	route.GET("", r.FindAll)
 	route.POST("", r.Create)
@@ -55,7 +56,7 @@ func (r *Route) FindAll(ctx *gin.Context) {
 }
 
 func (r *Route) FindOne(ctx *gin.Context) {
-	var input user_profile.Input
+	var input user_notification.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
@@ -68,7 +69,7 @@ func (r *Route) FindOne(ctx *gin.Context) {
 }
 
 func (r *Route) Create(ctx *gin.Context) {
-	var input user_profile.Input
+	var input user_notification.Input
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "reason": err.Error()})
 	} else if out, err := r.service.Create(&input); err != nil {
@@ -79,7 +80,7 @@ func (r *Route) Create(ctx *gin.Context) {
 }
 
 func (r *Route) Update(ctx *gin.Context) {
-	var input user_profile.Input
+	var input user_notification.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {
@@ -92,7 +93,7 @@ func (r *Route) Update(ctx *gin.Context) {
 }
 
 func (r *Route) Remove(ctx *gin.Context) {
-	var input user_profile.Input
+	var input user_notification.Input
 	uuid := ctx.Params.ByName("uuid")
 	input.UUID = &uuid
 	if err := ctx.ShouldBind(&input); err != nil {

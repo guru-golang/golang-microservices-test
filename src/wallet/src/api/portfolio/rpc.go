@@ -1,11 +1,11 @@
-package configuration
+package portfolio
 
 import (
 	common "car-rent-platform/backend/common/src/context"
 	"car-rent-platform/backend/common/src/lib/net_lib"
 	"car-rent-platform/backend/common/src/lib/wql_lib"
 	"car-rent-platform/backend/common/src/repository"
-	"car-rent-platform/backend/common/src/repository/configuration"
+	"car-rent-platform/backend/common/src/repository/user-portfolio"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,17 +15,17 @@ type (
 	}
 
 	Rpc struct {
-		service ConfigurationInterface
+		service PortfolioInterface
 	}
 )
 
 func (rpc *Rpc) Init(n *net_lib.Net, r *repository.Repository) {
-	rpc.service = NewConfigurationService(r)
-	n.Pattern(net_lib.ConfFindAll, rpc.FindAll)
-	n.Pattern(net_lib.ConfFindOne, rpc.FindOne)
-	n.Pattern(net_lib.ConfCreate, rpc.Create)
-	n.Pattern(net_lib.ConfUpdate, rpc.Update)
-	n.Pattern(net_lib.ConfRemove, rpc.Remove)
+	rpc.service = NewPortfolioService(r)
+	n.Pattern(net_lib.PortfolioFindAll, rpc.FindAll)
+	n.Pattern(net_lib.PortfolioFindOne, rpc.FindOne)
+	n.Pattern(net_lib.PortfolioCreate, rpc.Create)
+	n.Pattern(net_lib.PortfolioUpdate, rpc.Update)
+	n.Pattern(net_lib.PortfolioRemove, rpc.Remove)
 }
 
 func (rpc *Rpc) FindAll(ctx *net_lib.Context) {
@@ -41,7 +41,7 @@ func (rpc *Rpc) FindAll(ctx *net_lib.Context) {
 }
 
 func (rpc *Rpc) FindOne(ctx *net_lib.Context) {
-	var input configuration.Input
+	var input user_portfolio.Input
 
 	if err := ctx.Msg.ShouldBind(&input); err != nil {
 		_ = ctx.Error(err)
@@ -53,7 +53,7 @@ func (rpc *Rpc) FindOne(ctx *net_lib.Context) {
 }
 
 func (rpc *Rpc) Create(ctx *net_lib.Context) {
-	var input configuration.Input
+	var input user_portfolio.Input
 
 	if err := ctx.Msg.ShouldBind(&input); err != nil {
 		_ = ctx.Error(err)
@@ -65,7 +65,7 @@ func (rpc *Rpc) Create(ctx *net_lib.Context) {
 }
 
 func (rpc *Rpc) Update(ctx *net_lib.Context) {
-	var input configuration.Input
+	var input user_portfolio.Input
 
 	if err := ctx.Msg.ShouldBind(&input); err != nil {
 		_ = ctx.Error(err)
@@ -77,7 +77,7 @@ func (rpc *Rpc) Update(ctx *net_lib.Context) {
 }
 
 func (rpc *Rpc) Remove(ctx *net_lib.Context) {
-	var input configuration.Input
+	var input user_portfolio.Input
 
 	if err := ctx.Msg.ShouldBind(&input); err != nil {
 		_ = ctx.Error(err)

@@ -1,4 +1,4 @@
-package configuration
+package notification
 
 import (
 	common "car-rent-platform/backend/common/src/context"
@@ -15,17 +15,17 @@ type (
 	}
 
 	Rpc struct {
-		service ConfigurationInterface
+		service UserNotificationInterface
 	}
 )
 
 func (rpc *Rpc) Init(n *net_lib.Net, r *repository.Repository) {
-	rpc.service = NewConfigurationService(r)
-	n.Pattern(net_lib.ConfFindAll, rpc.FindAll)
-	n.Pattern(net_lib.ConfFindOne, rpc.FindOne)
-	n.Pattern(net_lib.ConfCreate, rpc.Create)
-	n.Pattern(net_lib.ConfUpdate, rpc.Update)
-	n.Pattern(net_lib.ConfRemove, rpc.Remove)
+	rpc.service = NewUserNotificationService(r)
+	n.Pattern(net_lib.WorkerNotificationFindAll, rpc.FindAll)
+	n.Pattern(net_lib.WorkerNotificationFindOne, rpc.FindOne)
+	n.Pattern(net_lib.WorkerNotificationCreate, rpc.Create)
+	n.Pattern(net_lib.WorkerNotificationUpdate, rpc.Update)
+	n.Pattern(net_lib.WorkerNotificationRemove, rpc.Remove)
 }
 
 func (rpc *Rpc) FindAll(ctx *net_lib.Context) {

@@ -40,10 +40,7 @@ func NewAPI() Interface {
 
 func (a *API) InitRoute(g *gin_lib.Gin, r *repository.Repository) {
 	br := g.Route(g.Conf.Version)
-	rg := a.Route.Configuration.Init(g, r, br.Group)
-	{
-		a.Route.Configuration.Init(g, r, rg)
-	}
+	_ = a.Route.Configuration.Init(g, r, br.Group)
 }
 
 func (a *API) InitRpc(n *net_lib.Net, r *repository.Repository) {

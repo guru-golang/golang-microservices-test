@@ -8,11 +8,41 @@ import (
 
 // broadcast messages
 const (
-	UserFindAll = "User.FideAll"
+	UserFindAll = "User.FindAll"
 	UserFindOne = "User.FindOne"
 	UserCreate  = "User.Create"
-	UserUpdate  = "User.Create"
+	UserUpdate  = "User.Update"
 	UserRemove  = "User.Remove"
+
+	UserProfileFindAll = "UserProfile.FindAll"
+	UserProfileFindOne = "UserProfile.FindOne"
+	UserProfileCreate  = "UserProfile.Create"
+	UserProfileUpdate  = "UserProfile.Update"
+	UserProfileRemove  = "UserProfile.Remove"
+
+	UserNotificationFindAll = "UserNotification.FindAll"
+	UserNotificationFindOne = "UserNotification.FindOne"
+	UserNotificationCreate  = "UserNotification.Create"
+	UserNotificationUpdate  = "UserNotification.Update"
+	UserNotificationRemove  = "UserNotification.Remove"
+
+	WorkerNotificationFindAll = "WorkerNotification.FindAll"
+	WorkerNotificationFindOne = "WorkerNotification.FindOne"
+	WorkerNotificationCreate  = "WorkerNotification.Create"
+	WorkerNotificationUpdate  = "WorkerNotification.Update"
+	WorkerNotificationRemove  = "WorkerNotification.Remove"
+
+	ConfFindAll = "Conf.FindAll"
+	ConfFindOne = "Conf.FindOne"
+	ConfCreate  = "Conf.Create"
+	ConfUpdate  = "Conf.Update"
+	ConfRemove  = "Conf.Remove"
+
+	PortfolioFindAll = "Portfolio.FindAll"
+	PortfolioFindOne = "Portfolio.FindOne"
+	PortfolioCreate  = "Portfolio.Create"
+	PortfolioUpdate  = "Portfolio.Update"
+	PortfolioRemove  = "Portfolio.Remove"
 )
 
 type Context struct {

@@ -4,6 +4,7 @@ import (
 	"car-rent-platform/backend/common/src/lib/gin_lib"
 	"car-rent-platform/backend/common/src/lib/net_lib"
 	"car-rent-platform/backend/common/src/repository"
+	"car-rent-platform/backend/worker/src/api/notification"
 )
 
 type (
@@ -13,28 +14,35 @@ type (
 	}
 	API struct {
 		Route struct {
+			Notification notification.RouteInterface
 		}
 		Rpc struct {
+			Notification notification.RpcInterface
 		}
 	}
 )
 
 func NewAPI() Interface {
 	i := API{
-		Route: struct{}{},
-		Rpc:   struct{}{},
+		Route: struct {
+			Notification notification.RouteInterface
+		}{
+			Notification: notification.NewRoute(),
+		},
+		Rpc: struct {
+			Notification notification.RpcInterface
+		}{
+			Notification: notification.NewRpc(),
+		},
 	}
 	return &i
 }
 
 func (a *API) InitRoute(g *gin_lib.Gin, r *repository.Repository) {
-	//br := g.Route(g.Conf.Version)
-	//rg := a.Route.User.Init(g, r, br.Group)
-	//{
-	//	a.Route.UserProfile.Init(g, r, rg)
-	//}
+	br := g.Route(g.Conf.Version)
+	_ = a.Route.Notification.Init(g, r, br.Group)
 }
 
 func (a *API) InitRpc(n *net_lib.Net, r *repository.Repository) {
-	//a.Rpc.User.Init(n, r)
+	a.Rpc.Notification.Init(n, r)
 }
